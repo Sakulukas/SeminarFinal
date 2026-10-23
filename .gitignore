@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+#Personal Spotify data
+Spotify Extended Streaming History/
+data_raw/
