@@ -1,0 +1,12 @@
+90 second pitch
+--what, why, how
+
+1. What?
+Have you ever wondered how your taste in music came to be? We aim to answer precisely that question? Make an app, where users can import their Spotify data. We try to answer the question, of how people discover music. We are interested in how long people listen to new artists, which artists people fall back on, etc. Is there recency bias in music? Goes beyond Spotify wrapped, shows which artists you skip, etc. We also want to aid in the discovery of new music.
+
+
+2. Why?
+Music is something that everyone interacts with daily. We feel that this is something that a lot of people can benefit from. 
+
+3. How?
+Let ppl upload json file. This includes your entire play-history. Clean data(remove IP address, convert time from UTC, remove podcasts, minimum listening time of 30 sec). We pull genre tags from an API.
