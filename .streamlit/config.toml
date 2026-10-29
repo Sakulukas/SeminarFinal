@@ -1,0 +1,46 @@
+# .streamlit/config.toml
+# Place this file at:  <folder you run `streamlit run` from>/.streamlit/config.toml
+# Restart the app after changes (theme edits aren't always hot-reloaded).
+
+[server]
+runOnSave = true            # auto-rerun when you save a script
+
+[browser]
+gatherUsageStats = false
+
+# ─────────────────────────────────────────────
+# ACTIVE THEME: Autumn (warm, cozy, light)
+# ─────────────────────────────────────────────
+[theme]
+base = "light"                       # "light" or "dark" – fallback for anything not set
+primaryColor = "#C2581F"             # buttons, sliders, active widgets (burnt orange)
+backgroundColor = "#FBF5EC"          # main page background (warm cream)
+secondaryBackgroundColor = "#F1E3CF" # sidebar, inputs, expanders (light parchment)
+textColor = "#3B2A20"                # body text (dark chestnut)
+font = "sans-serif"                  # "sans-serif", "serif" or "monospace"
+
+
+# [theme.sidebar]                    # optional: give the sidebar its own colours
+# backgroundColor = "#4A2E1F"
+# textColor = "#FBF5EC"
+
+
+# ─────────────────────────────────────────────
+# ALTERNATIVE 1: Autumn Dark (cozy evening)
+# Swap these values into [theme] above to try it.
+# ─────────────────────────────────────────────
+# base = "dark"
+# primaryColor = "#E08A3C"           # pumpkin
+# backgroundColor = "#1F1712"        # espresso
+# secondaryBackgroundColor = "#2E221A"
+# textColor = "#F3E6D3"
+
+
+# ─────────────────────────────────────────────
+# ALTERNATIVE 2: Christmas (forest + cranberry)
+# ─────────────────────────────────────────────
+# base = "light"
+# primaryColor = "#A4243B"           # cranberry red
+# backgroundColor = "#FAF7F2"        # snow white
+# secondaryBackgroundColor = "#E4EDE6" # pale pine
+# textColor = "#1E3A2F"              # deep forest green
