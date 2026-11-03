@@ -60,7 +60,6 @@ if __name__ == "__main__": #safeguard, this makes sure, that it is not run twice
 
 """
 #everything below is step 2:
-#df_raw = pd.read_json(path) #edit path while doing step 1
 #df = df_raw.copy(deep=True) #preserve original dataset
 #df.info()
 
