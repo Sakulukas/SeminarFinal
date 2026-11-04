@@ -1,9 +1,8 @@
-# .streamlit/config.toml
-# Place this file at:  <folder you run `streamlit run` from>/.streamlit/config.toml
-# Restart the app after changes (theme edits aren't always hot-reloaded).
 
 [server]
-runOnSave = true            # auto-rerun when you save a script
+runOnSave = true            # auto-rerun when you save a script 
+
+#this whole config file is just for looks, so you can adjust the colour schemes etc.
 
 [browser]
 gatherUsageStats = false

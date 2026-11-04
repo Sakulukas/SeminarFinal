@@ -1,23 +1,26 @@
 
+#ui.py is here to overwrite confi.toml when it comes to sessionstate changes such as the chrsitmas mode I introduce below
+#there are also things here concerning little design stuff like the coffee widget --> can be viewed as an add-on where you can
+#produce little easter eggs and other fun stuff
 
 import streamlit as st
 
-#Christmas theme ("Alternative 2"), applied as CSS on top of config.toml ── this is done with a css template i found 
+#Christmas theme ("Alternative 2"), applied as CSS on top of config.toml ── this is done with a css template I found 
 XMAS_CSS = """
 <style>
-.stApp { background-color: #006400; }
+.stApp { background-color: #DCE0E8; }
 .stApp, .stApp p, .stApp li, .stApp label,
-.stApp h1, .stApp h2, .stApp h3, .stApp h4 { color: #1E3A2F; }
+.stApp h1, .stApp h2, .stApp h3, .stApp h4 { color: #DCE0E8; }
 
-[data-testid="stSidebar"] { background-color: #8B0000; }
+[data-testid="stSidebar"] { background-color: #6B212C; }
 
 .stButton > button, .stDownloadButton > button, .stFormSubmitButton > button {
-    background-color: #A4243B; color: #FFFFFF; border: none;
+    background-color: #27363F; color: #7E1B2D; border: none;
 }
 .stButton > button:hover, .stDownloadButton > button:hover, .stFormSubmitButton > button:hover {
-    background-color: #7E1B2D; color: #FFFFFF;
+    background-color: #7E1B2D; color: #27363F;
 }
-.stApp a { color: #A4243B; }
+.stApp a { color: #7E1B2D; }
 </style>
 """
 
@@ -52,7 +55,7 @@ TOOLTIP_CSS = """
 """
 
 DEFAULT_COFFEE_TEXT = (
-    "Please send some money to +41 xxx so we can afford our gambling addiction"
+    "Please send some money to +41 xxx so we can get overpriced coffee"
 )
 
 
@@ -75,7 +78,7 @@ def render_header(coffee_text: str = DEFAULT_COFFEE_TEXT) -> None:
     _init_state()
     st.markdown(TOOLTIP_CSS, unsafe_allow_html=True)
 
-    # Wide empty column pushes the two small ones to the right edge
+    # Wide empty column pushes the two small ones to the right edge --> this is a design choice and can be changed as desired
     _, coffee_col, toggle_col = st.columns([10, 1, 2], vertical_alignment="center")
 
     with coffee_col:

@@ -219,6 +219,15 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-#Personal Spotify data
+# Personal path to the raw data
+config.py
+
+# Extra safety, in case data ever lands in the repository
 Spotify Extended Streaming History/
-data_raw/
+Streaming_History_*.json
+output/data_clean/
+
+# Files created automatically by Python, Jupyter and macOS
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
