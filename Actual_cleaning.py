@@ -1,10 +1,5 @@
-"""
-Cleaning script for the Spotify project.
- 
-Safe to run: this script only READS the JSON files. It does not change, move or
-delete anything on your computer, and it does not save any files.
- 
-Step 1: load and merge all audio files (path comes from config.py, not uploaded to GitHub)
+""" 
+Step 1: load and merge all audio files (path comes from config.py, so its not uploaded to githu)
 Step 2: clean the merged data
 """
  
