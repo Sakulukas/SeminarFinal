@@ -231,3 +231,10 @@ output/data_clean/
 __pycache__/
 .ipynb_checkpoints/
 .DS_Store
+
+# Private Spotify data
+data_private/
+
+# Generated charts containing personal listening history
+top_artists.html
+listening_heatmap.html
