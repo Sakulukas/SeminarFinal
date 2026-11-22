@@ -1,0 +1,13 @@
+- which songs do you skip?
+- standard: (akin to wrapped, only barebones)
+	- most songs played
+	- minutes listened
+	- ...
+- heat map: which part of the world do your songs originate from --> play example song, show more/up and coming artists from country
+- celebrities: which celebrity are you closest to?
+- 
+- add ons: (if time)
+	- song of the day, at top of website (recommends song based on listening patterns)
+	- 
+	
+--> summarise core stats and add them to your music resumé, then be able to look at friends' music resumé and compare. (Still open which stats we want to include)
