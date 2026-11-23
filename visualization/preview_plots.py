@@ -3,10 +3,10 @@ import webbrowser
 from pathlib import Path
 import pandas as pd
 import plotly.io as pio
-from plot_top_artists import plot_top_artists
-from plot_heatmap import plot_listening_heatmap
-from plot_artist_history import plot_artist_history
-from plot_skip_rates import render_skip_rates
+from visualization.plot_top_artists import plot_top_artists
+from visualization.plot_heatmap import plot_listening_heatmap
+from visualization.plot_artist_history import plot_artist_history
+from visualization.plot_skip_rates import render_skip_rates
 
 def load_spotify_data(data_folder):
     files = sorted(

@@ -152,3 +152,15 @@ def render_header(coffee_text: str = DEFAULT_COFFEE_TEXT) -> None:
             key="_xmas_toggle",
             on_change=_sync_toggle,
         )
+
+
+def style_fig(fig):
+    """Make any Plotly figure match the current theme."""
+    text = XMAS_CSS["text"] if is_xmas() else AUTUMN["text"]
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",   # transparent → shows the card behind it
+        plot_bgcolor="rgba(0,0,0,0)",
+        font_color=text,
+        colorway=[accent(), "#E8B931", "#5B7B7A", "#9AA0A6"],  # colours for the lines/bars
+    )
+    return fig
