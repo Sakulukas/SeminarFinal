@@ -238,3 +238,4 @@ data_private/
 # Generated charts containing personal listening history
 top_artists.html
 listening_heatmap.html.DS_Store
+spotify_files
