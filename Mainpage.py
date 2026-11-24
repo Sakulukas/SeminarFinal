@@ -30,8 +30,7 @@ else:
     raw = json.loads(examples[choice].read_text())
 
 if raw is not None and st.button("Use this button"):
-    st.session_state.df = raw
-    #will in future be clean_data(raw)
+    st.session_state.df = clean_data(raw)
     st.success("Data loaded and ready to go!")
 
     
