@@ -7,7 +7,8 @@ from visualization.plot_top_artists import plot_top_artists
 from visualization.plot_heatmap import plot_listening_heatmap
 from visualization.plot_artist_history import plot_artist_history
 from visualization.plot_skip_rates import render_skip_rates
-
+from visualization.plot_discovery import render_discovery
+from visualization.plot_comebacks import render_comebacks
 def load_spotify_data(data_folder):
      files = sorted(
          data_folder.rglob("Streaming_History_Audio_*.json")
@@ -383,6 +384,16 @@ if __name__ == "__main__":
         "</body>",
         skip_section + "</body>"
     )
+
+    discovery_section = render_discovery(df_plays)
+    comeback_section = render_comebacks(df_plays)
+
+    page = page.replace(
+        "</main>",
+        discovery_section + comeback_section + "</main>"
+    )
+
+
     output_path = data_folder / "dashboard.html"
     output_path.write_text(page, encoding="utf-8")
     webbrowser.open(output_path.as_uri())
