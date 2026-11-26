@@ -6,6 +6,20 @@
 #the css tmeplates can be found online as there are many designs available and its rigorous work to do by hand 
 import streamlit as st
 
+AUTUMN = {
+    "accent": "#C2581F",
+    "text": "#3B2A20",
+}
+
+XMAS = {
+    "bg": "#DCE0E8",
+    "sidebar": "#6B212C",
+    "sidebar_text": "#F5ECE6",
+    "text": "#27363F",
+    "accent": "#6B212C",
+    "accent_hover": "#8A2D3A",
+}
+
 #Christmas theme ("Alternative 2"), applied as CSS on top of config.toml ── this is done with a css template I found 
 XMAS_CSS = """
 <style>
@@ -153,10 +167,13 @@ def render_header(coffee_text: str = DEFAULT_COFFEE_TEXT) -> None:
             on_change=_sync_toggle,
         )
 
+def accent() -> str:
+    return XMAS["accent"] if is_xmas() else AUTUMN["accent"]
+
 
 def style_fig(fig):
     """Make any Plotly figure match the current theme."""
-    text = XMAS_CSS["text"] if is_xmas() else AUTUMN["text"]
+    text = XMAS["text"] if is_xmas() else AUTUMN["text"]
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",   # transparent → shows the card behind it
         plot_bgcolor="rgba(0,0,0,0)",

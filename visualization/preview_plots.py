@@ -9,15 +9,15 @@ from visualization.plot_artist_history import plot_artist_history
 from visualization.plot_skip_rates import render_skip_rates
 
 def load_spotify_data(data_folder):
-    files = sorted(
-        data_folder.rglob("Streaming_History_Audio_*.json")
-    )
-    if not files:
-        raise FileNotFoundError(
-            "No Spotify audio files found in data_private."
-        )
-    rows = []
-    for file in files:
+     files = sorted(
+         data_folder.rglob("Streaming_History_Audio_*.json")
+     )
+     if not files:
+         raise FileNotFoundError(
+             "No Spotify audio files found in data_private."
+         )
+rows = []
+for file in files:
         with file.open("r", encoding="utf-8") as f:
             records = json.load(f)
         for record in records:
