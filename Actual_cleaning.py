@@ -4,7 +4,9 @@ Step 2: clean the merged data
 """
  
 import json
-from pathlib import Path
+import zipfile
+from fnmatch import fnmatch
+from pathlib import Path, PurePosixPath
  
 import numpy as np
 import pandas as pd
@@ -12,10 +14,9 @@ import pandas as pd
 try:
     from config import DATA_FOLDER
 except ModuleNotFoundError:
-    raise SystemExit(
-        "config.py not found. Copy config_example.py to config.py (in the same folder "
-        "as this script) and enter the path to your Spotify data."
-    )
+    DATA_FOLDER = None
+#this is only for local usage, website/GitHub does not see my config.py file, just keeping this here to see the journey  
+
  
 name_of_files = "Streaming_History_Audio_*.json"
 LOCAL_TZ = "Europe/Zurich"   # local time zone (the export is in UTC)
