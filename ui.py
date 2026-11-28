@@ -5,6 +5,29 @@
 
 #the css tmeplates can be found online as there are many designs available and its rigorous work to do by hand 
 import streamlit as st
+import random
+from pathlib import Path
+import pandas as pd
+from html import escape
+
+#Members = ["Niels", "Lukas", "Tobias"]
+example_path = Path(__file__).parent / "examples"
+Members = ["Tobias"]
+
+@st.cache_data
+def load_songs(name:str) -> pd.DataFrame:
+    df = pd.read_csv(example_path / f"{name}.csv", usecols=["master_metadata_track_name", "master_metadata_album_artist_name"],)
+    return df.dropna()
+
+def make_coffee_text() -> str:
+    name = random.choice(Members)
+    song = load_songs(name).sample(1).iloc[0]
+    title = escape(song["master_metadata_track_name"])
+    artist = escape(song["master_metadata_album_artist_name"])
+    return f"Song tip by {name}: {title} -- {artist}"
+
+
+
 
 AUTUMN = {
     "accent": "#C2581F",
@@ -121,10 +144,6 @@ CARD_CSS = """
 </style>
 """
  
-DEFAULT_COFFEE_TEXT = (
-    "Daily tip by (insert name): (random song from one of our playlists). "
-)
- 
  
 
 def card(name: str):
@@ -145,8 +164,11 @@ def _sync_toggle() -> None:
 def is_xmas() -> bool:
     return st.session_state.get("xmas", False)
 
-def render_header(coffee_text: str = DEFAULT_COFFEE_TEXT) -> None:
+def render_header() -> None:
     _init_state()
+
+    if "coffee_text" not in st.session_state:
+        st.session_state.coffee_text = make_coffee_text()
  
     css = TOOLTIP_CSS + CARD_CSS + (XMAS_CSS if is_xmas() else "")
     st.markdown(css, unsafe_allow_html=True)
@@ -155,7 +177,7 @@ def render_header(coffee_text: str = DEFAULT_COFFEE_TEXT) -> None:
  
     with coffee_col:
         st.markdown(
-            f'<div class="coffee">☕<span class="tip">{coffee_text}</span></div>',
+            f'<div class="coffee">☕<span class="tip">{st.session_state.coffee_text}</span></div>',
             unsafe_allow_html=True,
         )
  

@@ -4,9 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 from ui import card, render_header, style_fig
-from visualization.plot_top_artists import plot_top_artists
-from visualization.plot_heatmap import plot_listening_heatmap
-from visualization.plot_artist_history import plot_artist_history
+from visualization.streamlit_dashboard import render_analysis
 
 st.set_page_config(page_title="Spotifydle", page_icon="🎧", layout="wide")
 render_header()
