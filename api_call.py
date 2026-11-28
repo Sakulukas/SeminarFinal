@@ -9,7 +9,7 @@ def get_artist_info(artist):
     params = {
         "method" : "artist.gettoptags",
         "artist": artist,
-        "LASTFM_API_KEY": st.secrets["LASTFM_API_KEY"],
+        "api_key": st.secrets["LASTFM_API_KEY"],
         "format": "json",
         "autocorrect": 1, #still finds misspelled names (not if gibberish)
     }
