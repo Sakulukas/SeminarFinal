@@ -300,3 +300,35 @@ def render_skip_rates(df_music):
     })();
     </script>
     """.replace("__SKIP_DATA__", safe_json)
+
+
+# Native Python/Plotly API for Streamlit.
+def skip_rate_data(df_music, threshold=30, year=None, month=None):
+    import math
+    from visualization.analysis_data import ARTIST, prepare_music, filter_period
+    if not math.isfinite(float(threshold)) or float(threshold) < 1:
+        raise ValueError('Skip threshold must be at least one second.')
+    data = filter_period(prepare_music(df_music), year, month)
+    data['is_skip'] = data['sec_played'].lt(float(threshold))
+    totals = data.groupby(ARTIST)['is_skip'].agg(entries='size', skips='sum').reset_index()
+    totals = totals.loc[totals['entries'].ge(20)].copy()
+    totals['plays'] = totals['entries'] - totals['skips']
+    totals['skip_rate'] = totals['skips']/totals['entries']*100
+    return totals.sort_values(['skip_rate','entries',ARTIST], ascending=[False,False,True]).head(10)
+
+
+def plot_skip_rates(df_music, threshold=30, year=None, month=None):
+    import plotly.express as px
+    from visualization.analysis_data import ARTIST, empty_figure
+    data = skip_rate_data(df_music, threshold, year, month).iloc[::-1]
+    if data.empty:
+        return empty_figure('Skip Rates by Artist', 'No artists have at least 20 entries in this period.')
+    fig = px.bar(data, x='skip_rate', y=ARTIST, color=ARTIST, orientation='h',
+        color_discrete_sequence=px.colors.qualitative.Plotly, template='plotly_white',
+        custom_data=['skips','plays','entries'], labels={'skip_rate':'Skip rate (%)',ARTIST:''},
+        title=f'Skip Rates by Artist · threshold: {threshold:g} seconds')
+    fig.update_layout(height=500,bargap=.55,showlegend=False,paper_bgcolor='white',plot_bgcolor='white')
+    fig.update_xaxes(range=[0,100],ticksuffix='%')
+    fig.update_yaxes(categoryorder='array',categoryarray=data[ARTIST].tolist(),automargin=True)
+    fig.update_traces(hovertemplate='%{y}<br>Skip rate: %{x:.1f}%<br>Skips: %{customdata[0]}<br>Plays: %{customdata[1]}<br>Total: %{customdata[2]}<extra></extra>')
+    return fig

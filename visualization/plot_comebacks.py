@@ -518,3 +518,57 @@ def render_comebacks(df_plays):
     })();
     </script>
     """.replace("__COMEBACK_DATA__", safe_json)
+
+
+# Native Python/Plotly API for Streamlit. HTML preview compatibility remains above.
+def comeback_events(df_plays, min_days=180, year=None, month=None, artist=None):
+    import math
+    from visualization.analysis_data import ARTIST, prepare_music, filter_period
+    if not math.isfinite(float(min_days)) or float(min_days) < 1:
+        raise ValueError('Minimum pause must be at least one day.')
+    data = prepare_music(df_plays, plays_only=True)
+    data['previous_play'] = data.groupby(ARTIST)['ts'].shift()
+    data['pause_days'] = (data['ts'] - data['previous_play']).dt.total_seconds()/86400
+    # Calculate across the full history, then filter by the RETURN date.
+    events = data.loc[data['pause_days'].ge(float(min_days))].copy()
+    events = filter_period(events, year, month)
+    if artist is not None:
+        events = events.loc[events[ARTIST].eq(artist)]
+    return events[[ARTIST, 'previous_play', 'ts', 'pause_days']].sort_values('ts', ascending=False)
+
+
+def plot_comebacks(df_plays, min_days=180, year=None, month=None, artist=None):
+    import plotly.graph_objects as go
+    from visualization.analysis_data import ARTIST, empty_figure
+    events = comeback_events(df_plays, min_days, year, month, artist)
+    if events.empty:
+        return empty_figure('Artist Comebacks', 'No matching comebacks.')
+    ranking = events.groupby(ARTIST).size().rename('count').reset_index().sort_values(
+        ['count', ARTIST], ascending=[False, True]).head(15)
+    shown = events.loc[events[ARTIST].isin(ranking[ARTIST])]
+    # Display timezone-explicit strings in tooltips, regardless of browser timezone.
+    custom = list(zip(shown['previous_play'].dt.strftime('%d %b %Y, %H:%M %Z'),
+                      shown['ts'].dt.strftime('%d %b %Y, %H:%M %Z'), shown['pause_days']))
+    fig = go.Figure(go.Scatter(x=shown['ts'], y=shown[ARTIST], mode='markers', customdata=custom,
+        marker=dict(size=12, color=shown['pause_days'], colorscale='Teal', showscale=True,
+                    colorbar=dict(title='Days away')),
+        hovertemplate='%{y}<br>Previous: %{customdata[0]}<br>Return: %{customdata[1]}<br>Pause: %{customdata[2]:.2f} days<extra></extra>'))
+    fig.update_layout(title='Artist Comebacks', template='plotly_white', height=560,
+                      xaxis_title='Return date', paper_bgcolor='white', plot_bgcolor='white',
+                      margin=dict(l=120,r=60,t=60,b=60))
+    fig.update_yaxes(automargin=True)
+    return fig
+
+
+def last_recorded_play(df_plays, artist, now=None):
+    import pandas as pd
+    from visualization.analysis_data import ARTIST, TZ, prepare_music
+    data = prepare_music(df_plays, plays_only=True)
+    selected = data.loc[data[ARTIST].eq(artist), 'ts']
+    if selected.empty:
+        return None
+    current = pd.Timestamp.now(tz=TZ) if now is None else pd.Timestamp(now)
+    current = current.tz_localize(TZ) if current.tzinfo is None else current.tz_convert(TZ)
+    last = selected.max()
+    return {'last_play':last, 'dataset_end':data['ts'].max(),
+            'days_since':max(0., (current-last).total_seconds()/86400)}

@@ -441,3 +441,70 @@ __DISCOVERY_DATA__
 })();
 </script>
     """.replace("__DISCOVERY_DATA__", safe_json)
+
+
+# Native Python/Plotly API. The older HTML function above is kept only for
+# preview_plots.py compatibility; Streamlit uses the functions below.
+def discovery_data(df_plays):
+    import pandas as pd
+    from visualization.analysis_data import ARTIST, prepare_music
+    data = prepare_music(df_plays, plays_only=True)
+    data['month'] = data['ts'].dt.tz_localize(None).dt.to_period('M')
+    first = data.groupby(ARTIST)['ts'].min()
+    data['is_new'] = data['month'].eq(data[ARTIST].map(first.dt.tz_localize(None).dt.to_period('M')))
+    baseline = data['month'].min() if not data.empty else None
+    if data.empty:
+        monthly = pd.DataFrame(columns=['New artists', 'Familiar artists', 'total_minutes'])
+        monthly.index = pd.DatetimeIndex([], name='month')
+    else:
+        monthly = (data.groupby(['month', 'is_new'])['sec_played'].sum().div(60)
+                   .unstack(fill_value=0).reindex(columns=[True, False], fill_value=0))
+        monthly.columns = ['New artists', 'Familiar artists']
+        monthly = monthly.reindex(pd.period_range(baseline, data['month'].max(), freq='M'), fill_value=0)
+        monthly['total_minutes'] = monthly.sum(axis=1)
+        monthly.index = monthly.index.to_timestamp()
+        monthly.index.name = 'month'
+    return data, monthly, first, baseline
+
+
+def plot_discovery(df_plays, year=None, month=None):
+    import plotly.graph_objects as go
+    from visualization.analysis_data import empty_figure
+    _, monthly, _, baseline = discovery_data(df_plays)
+    if baseline is None:
+        return empty_figure('Discovery vs. Familiarity', 'No listening data available.')
+    display = monthly.loc[monthly.index != baseline.to_timestamp()]
+    if year is not None:
+        display = display.loc[display.index.year == int(year)]
+    if month is not None:
+        display = display.loc[display.index.month == int(month)]
+    if display.empty or not display['total_minutes'].gt(0).any():
+        return empty_figure('Discovery vs. Familiarity', 'No comparable listening data for this period.')
+    fig = go.Figure()
+    denominator = display['total_minutes'].where(display['total_minutes'].gt(0))
+    for category, color in [('New artists', '#00B894'), ('Familiar artists', '#636EFA')]:
+        fig.add_bar(name=category, x=display.index, y=display[category].div(denominator).mul(100),
+                    marker_color=color, hovertemplate='%{x|%b %Y}<br>%{y:.1f}%<extra>%{fullData.name}</extra>')
+    fig.update_layout(title='Discovery vs. Familiarity', template='plotly_white', barmode='stack', height=450,
+                      legend=dict(orientation='h', y=-.25), paper_bgcolor='white', plot_bgcolor='white',
+                      xaxis_title='Month', yaxis_title='Share of listening time (%)')
+    fig.update_yaxes(range=[0,100], ticksuffix='%', gridcolor='#EEEEEE')
+    fig.update_xaxes(showgrid=False, tickformat='%b %Y')
+    return fig
+
+
+def discovery_artist_details(df_plays, artist, year=None, month=None):
+    from visualization.analysis_data import ARTIST, filter_period
+    data, _, first, baseline = discovery_data(df_plays)
+    if artist not in first.index:
+        return None
+    first_play = first.loc[artist]
+    first_period = first_play.tz_localize(None).to_period('M')
+    selected = filter_period(data, year, month)
+    in_period = (year is None or first_play.year == int(year)) and (month is None or first_play.month == int(month))
+    observation = ('Baseline observation' if first_period == baseline else
+                   'First recorded appearance in selected period' if in_period else
+                   'First recorded appearance outside selected period')
+    return {'artist':artist, 'first_play':first_play,
+            'minutes':float(selected.loc[selected[ARTIST].eq(artist), 'sec_played'].sum()/60),
+            'observation':observation}
